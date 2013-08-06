@@ -21,5 +21,8 @@ class LazySignupBackend(ModelBackend):
         except user_class.DoesNotExist:
             user = None
         else:
-            user.backend = 'lazysignup.backends.LazySignupBackend'
+            #no need to mark backend as lazy if lazy user has been already converted
+            if LazyUser.objects.filter(user = user).count() > 0:
+                user.backend = 'lazysignup.backends.LazySignupBackend'
+
         return user
