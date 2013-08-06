@@ -6,6 +6,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.utils.decorators import available_attrs
+from django.utils.http import urlencode
 from lazysignup.utils import is_lazy_user
 
 ALLOW_LAZY_REGISTRY = {}
@@ -66,6 +67,8 @@ def require_nonlazy_user(*redirect_args, **redirect_kwargs):
             if not is_lazy_user(request.user):
                 return func(request, *args, **kwargs)
             else:
-                return redirect(*redirect_args, **redirect_kwargs)
+                result = redirect(*redirect_args, **redirect_kwargs)
+                result['Location'] += '?' + urlencode({'redirect_to': request.path})
+                return result
         return inner
     return decorator

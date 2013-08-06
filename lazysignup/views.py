@@ -64,6 +64,9 @@ def convert(request, form_class=UserCreationForm,
     else:
         form = form_class()
 
+        if redirect_field_name in request.GET:
+            redirect_to = request.GET[redirect_field_name]
+
     # If this is an ajax request, prepend the ajax template to the list of
     # templates to be searched.
     if request.is_ajax():
